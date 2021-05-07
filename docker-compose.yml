@@ -1,0 +1,34 @@
+version: '3.4'
+
+services:
+  sender:
+    image: ${DOCKER_REGISTRY-}sender
+    build:
+      context: .\Sender
+      dockerfile: Dockerfile
+    
+    hostname: 'sender'
+    networks:
+        fluentd-runtime:
+            aliases:
+                - sender
+    platform: windows/amd64
+
+  receiver:
+    image: ${DOCKER_REGISTRY-}receiver
+    build:
+      context: .\Receiver
+      dockerfile: Dockerfile
+    
+    hostname: 'receiver'
+    ports:
+        - "24222:24222"
+    networks:
+        fluentd-runtime:
+            aliases:
+                - receiver
+    platform: windows/amd64
+
+networks:
+    fluentd-runtime:
+        driver: nat
